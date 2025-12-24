@@ -26,19 +26,6 @@ jobs:
       - name: Build (debug) - This crashes the compiler
         run: swift build -c debug -v
 
-  # Control: Same code works on macOS
-  macos:
-    name: macOS (Swift 6.2) - Works
-    runs-on: macos-15
-    steps:
-      - uses: actions/checkout@v5
-
-      - name: Print Swift version
-        run: swift --version
-
-      - name: Build (debug)
-        run: swift build -c debug
-
   # Control: Same code works on Linux
   linux:
     name: Linux (Swift 6.2) - Works
