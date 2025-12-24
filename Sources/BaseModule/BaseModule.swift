@@ -1,6 +1,8 @@
 /// Base module that defines the HTML namespace and Rendering protocol.
 /// This simulates WHATWG_HTML_Shared and Rendering modules.
 
+public import OrderedCollections
+
 // MARK: - Rendering Protocol
 
 public enum Rendering {}
@@ -67,6 +69,7 @@ public enum HTML {}
 
 extension HTML {
     public struct Context {
+        public var styles: OrderedDictionary<String, String> = [:]
         public init() {}
     }
 }
