@@ -1,3 +1,0 @@
-module ExistentialCrash {
-    header "/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/ExistentialCrash.build/include/ExistentialCrash-Swift.h"
-}
