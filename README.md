@@ -1,5 +1,7 @@
 # Swift Compiler Crash: Windows Existential Type Mangling
 
+**Bug Report:** https://github.com/swiftlang/swift/issues/86202
+
 Minimal reproduction case for a Swift compiler crash on Windows when mangling existential types for debug info.
 
 ## Bug Summary
