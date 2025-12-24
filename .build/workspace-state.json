@@ -1,0 +1,30 @@
+{
+  "object" : {
+    "artifacts" : [
+
+    ],
+    "dependencies" : [
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "swift-issue-windows-existential-crash-other-package",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/coenttb/swift-issue-windows-existential-crash-other-package",
+          "name" : "swift-issue-windows-existential-crash-other-package"
+        },
+        "state" : {
+          "checkoutState" : {
+            "revision" : "33a799fe7a5be7169df5e90442c9008a189db49c",
+            "version" : "0.1.0"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "swift-issue-windows-existential-crash-other-package"
+      }
+    ],
+    "prebuilts" : [
+
+    ]
+  },
+  "version" : 7
+}

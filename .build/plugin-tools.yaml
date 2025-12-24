@@ -1,0 +1,66 @@
+client:
+  name: basic
+  file-system: device-agnostic
+tools: {}
+targets:
+  "BaseModule-arm64-apple-macosx26.0-debug.module": ["<BaseModule-arm64-apple-macosx26.0-debug.module>"]
+  "ExistentialCrash-arm64-apple-macosx26.0-debug.module": ["<ExistentialCrash-arm64-apple-macosx26.0-debug.module>"]
+  "PackageStructure": ["<PackageStructure>"]
+  "main": ["<ExistentialCrash-arm64-apple-macosx26.0-debug.module>"]
+  "test": ["<ExistentialCrash-arm64-apple-macosx26.0-debug.module>"]
+default: "main"
+nodes:
+  "/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/Sources/ExistentialCrash/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+commands:
+  "/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/BaseModule.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/checkouts/swift-issue-windows-existential-crash-other-package/Sources/BaseModule/BaseModule.swift"]
+    outputs: ["/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/BaseModule.build/sources"]
+    description: "Write auxiliary file /Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/BaseModule.build/sources"
+
+  "/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/ExistentialCrash.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/Sources/ExistentialCrash/Crash.swift"]
+    outputs: ["/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/ExistentialCrash.build/sources"]
+    description: "Write auxiliary file /Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/ExistentialCrash.build/sources"
+
+  "/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt":
+    tool: write-auxiliary-file
+    inputs: ["<swift-get-version>","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"]
+    outputs: ["/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"]
+    always-out-of-date: "true"
+    description: "Write auxiliary file /Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+
+  "<BaseModule-arm64-apple-macosx26.0-debug.module>":
+    tool: phony
+    inputs: ["/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/BaseModule.build/BaseModule.swift.o","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/Modules/BaseModule.swiftmodule"]
+    outputs: ["<BaseModule-arm64-apple-macosx26.0-debug.module>"]
+
+  "<ExistentialCrash-arm64-apple-macosx26.0-debug.module>":
+    tool: phony
+    inputs: ["/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/ExistentialCrash.build/Crash.swift.o","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/Modules/ExistentialCrash.swiftmodule"]
+    outputs: ["<ExistentialCrash-arm64-apple-macosx26.0-debug.module>"]
+
+  "C.BaseModule-arm64-apple-macosx26.0-debug.module":
+    tool: shell
+    inputs: ["/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/checkouts/swift-issue-windows-existential-crash-other-package/Sources/BaseModule/BaseModule.swift","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/BaseModule.build/sources"]
+    outputs: ["/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/BaseModule.build/BaseModule.swift.o","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/Modules/BaseModule.swiftmodule"]
+    description: "Compiling Swift Module 'BaseModule' (1 sources)"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-module-name","BaseModule","-emit-dependencies","-emit-module","-emit-module-path","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/Modules/BaseModule.swiftmodule","-output-file-map","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/BaseModule.build/output-file-map.json","-parse-as-library","-incremental","-c","@/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/BaseModule.build/sources","-I","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/Modules","-target","arm64-apple-macosx10.13","-incremental","-enable-batch-mode","-serialize-diagnostics","-index-store-path","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/index/store","-Onone","-enable-testing","-j8","-DSWIFT_PACKAGE","-DDEBUG","-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE","-module-cache-path","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/ModuleCache","-parseable-output","-parse-as-library","-emit-objc-header","-emit-objc-header-path","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/BaseModule.build/include/BaseModule-Swift.h","-swift-version","6","-plugin-path","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-Xcc","-fPIC","-Xcc","-g","-suppress-warnings","-user-module-version","0.1.0","-package-name","swift_issue_windows_existential_crash_other_package"]
+
+  "C.ExistentialCrash-arm64-apple-macosx26.0-debug.module":
+    tool: shell
+    inputs: ["/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/Sources/ExistentialCrash/Crash.swift","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/Modules/BaseModule.swiftmodule","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/ExistentialCrash.build/sources"]
+    outputs: ["/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/ExistentialCrash.build/Crash.swift.o","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/Modules/ExistentialCrash.swiftmodule"]
+    description: "Compiling Swift Module 'ExistentialCrash' (1 sources)"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-module-name","ExistentialCrash","-emit-dependencies","-emit-module","-emit-module-path","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/Modules/ExistentialCrash.swiftmodule","-output-file-map","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/ExistentialCrash.build/output-file-map.json","-parse-as-library","-incremental","-c","@/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/ExistentialCrash.build/sources","-I","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/Modules","-target","arm64-apple-macosx10.13","-incremental","-enable-batch-mode","-serialize-diagnostics","-index-store-path","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/index/store","-Onone","-enable-testing","-j8","-DSWIFT_PACKAGE","-DDEBUG","-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE","-module-cache-path","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/ModuleCache","-parseable-output","-parse-as-library","-emit-objc-header","-emit-objc-header-path","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/.build/arm64-apple-macosx/debug/ExistentialCrash.build/include/ExistentialCrash-Swift.h","-swift-version","6","-plugin-path","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-Xcc","-fPIC","-Xcc","-g","-package-name","swift_issue_windows_existential_crash"]
+
+  "PackageStructure":
+    tool: package-structure-tool
+    inputs: ["/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/Sources/ExistentialCrash/","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/Package.swift","/Users/coen/Developer/coenttb/swift-issue-windows-existential-crash/Package.resolved"]
+    outputs: ["<PackageStructure>"]
+    description: "Planning build"
+    allow-missing-inputs: true
+
