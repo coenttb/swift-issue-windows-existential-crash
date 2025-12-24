@@ -28,10 +28,17 @@ The crash occurs during debug build. Release builds may also be affected.
 
 ## Minimal Code
 
-The reproduction involves a protocol hierarchy with constrained associated types:
+The reproduction involves a **cross-module** protocol hierarchy:
 
 ```swift
-// Base protocol with 3 associated types
+// === BaseModule ===
+// Defines namespace and base protocol (like WHATWG_HTML_Shared + Rendering)
+
+public enum HTML {}
+extension HTML {
+    public struct Context { ... }
+}
+
 public protocol Renderable {
     associatedtype Content
     associatedtype Context
@@ -39,7 +46,11 @@ public protocol Renderable {
     var body: Content { get }
 }
 
-// Constrained protocol refinement
+// === ExistentialCrash ===
+// Extends HTML with View protocol (like HTML Renderable)
+
+import BaseModule
+
 extension HTML {
     public protocol View: Renderable
     where Content: HTML.View, Context == HTML.Context, Output == UInt8 {
@@ -47,7 +58,6 @@ extension HTML {
     }
 }
 
-// Type-erased wrapper with existential stored property
 extension HTML {
     public struct AnyView: HTML.View {
         public let base: any HTML.View  // Existential type - triggers crash
@@ -57,13 +67,15 @@ extension HTML {
             self.base = base
             // ...
         }
-
-        public var body: Never { fatalError() }
     }
 }
 ```
 
-See `Sources/ExistentialCrash/Crash.swift` for the complete reproduction case.
+The key is that the `HTML` namespace is defined in one module and the `HTML.View` protocol
+is added via extension in a different module. This cross-module extension pattern is what
+triggers the bug.
+
+See `Sources/` for the complete reproduction case.
 
 ## Stack Trace
 
