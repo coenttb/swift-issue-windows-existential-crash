@@ -1,39 +1,27 @@
-// swift-tools-version:6.2
+// swift-tools-version:6.0
 import PackageDescription
 
 let package = Package(
     name: "ExistentialCrash",
-    platforms: [
-        .macOS(.v26),
-        .iOS(.v26),
-        .tvOS(.v26),
-        .watchOS(.v26),
-    ],
     products: [
         .library(name: "ExistentialCrash", targets: ["ExistentialCrash"]),
     ],
-    dependencies: [
-        // This package contains HTML.AnyView which triggers the crash
-        .package(url: "https://github.com/coenttb/swift-html-rendering", from: "0.1.15"),
-    ],
     targets: [
-        // Just import the library that contains the crashing code
+        // Base module: defines the namespace (like WHATWG_HTML_Shared)
+        .target(name: "BaseModule"),
+
+        // Extension module: adds protocol to namespace (like HTML_Renderable)
         .target(
             name: "ExistentialCrash",
-            dependencies: [
-                .product(name: "HTML Renderable", package: "swift-html-rendering"),
-            ]
+            dependencies: ["BaseModule"]
         )
-    ],
-    swiftLanguageModes: [.v6]
+    ]
 )
 
-// Add Swift settings matching the real packages
+// Match the Swift settings from the crashing packages
 for target in package.targets {
-    let existing = target.swiftSettings ?? []
-    target.swiftSettings = existing + [
+    target.swiftSettings = [
         .enableUpcomingFeature("ExistentialAny"),
         .enableUpcomingFeature("InternalImportsByDefault"),
-        .enableUpcomingFeature("MemberImportVisibility")
     ]
 }
