@@ -8,6 +8,33 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Control: Same code works on macOS
+  macos:
+    name: macOS (Swift 6.2) - Works
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Select Xcode 26.0
+        run: sudo xcode-select -s /Applications/Xcode_26.0.app
+
+      - name: Print Swift version
+        run: swift --version
+
+      - name: Build (debug)
+        run: swift build -c debug
+
+  # Control: Same code works on Linux
+  linux:
+    name: Linux (Swift 6.2) - Works
+    runs-on: ubuntu-latest
+    container: swift:6.2
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build (debug)
+        run: swift build -c debug
+
   # This job reproduces the compiler crash
   windows:
     name: Windows (Swift 6.2) - CRASHES
@@ -25,14 +52,3 @@ jobs:
 
       - name: Build (debug) - This crashes the compiler
         run: swift build -c debug -v
-
-  # Control: Same code works on Linux
-  linux:
-    name: Linux (Swift 6.2) - Works
-    runs-on: ubuntu-latest
-    container: swift:6.2
-    steps:
-      - uses: actions/checkout@v5
-
-      - name: Build (debug)
-        run: swift build -c debug

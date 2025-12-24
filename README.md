@@ -159,8 +159,9 @@ The compiler crashes with an assertion failure when attempting to mangle the exi
 
 | Platform | Status |
 |----------|--------|
-| Windows | ❌ Crashes (reproduces bug) |
+| macOS | ✅ Works |
 | Linux | ✅ Works |
+| Windows | ❌ Crashes |
 
 **Reproduction CI:** https://github.com/coenttb/swift-issue-windows-existential-crash/actions
 
