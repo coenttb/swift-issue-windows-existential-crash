@@ -1,28 +1,28 @@
-// swift-tools-version:6.0
+// swift-tools-version:6.2
 import PackageDescription
 
 let package = Package(
     name: "ExistentialCrash",
+    platforms: [
+        .macOS(.v26),
+        .iOS(.v26),
+        .tvOS(.v26),
+        .watchOS(.v26),
+    ],
     products: [
         .library(name: "ExistentialCrash", targets: ["ExistentialCrash"]),
     ],
     dependencies: [
-        // External dependency to match real scenario
-        .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.2"),
+        // This package contains HTML.AnyView which triggers the crash
+        .package(url: "https://github.com/coenttb/swift-html-rendering", from: "0.1.15"),
     ],
     targets: [
-        // Base module: defines the HTML namespace and base types
-        .target(
-            name: "BaseModule",
-            dependencies: [
-                .product(name: "OrderedCollections", package: "swift-collections"),
-            ]
-        ),
-
-        // Rendering module: extends with View protocol and AnyView
+        // Just import the library that contains the crashing code
         .target(
             name: "ExistentialCrash",
-            dependencies: ["BaseModule"]
+            dependencies: [
+                .product(name: "HTML Renderable", package: "swift-html-rendering"),
+            ]
         )
     ],
     swiftLanguageModes: [.v6]

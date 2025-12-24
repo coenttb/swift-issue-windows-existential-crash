@@ -28,17 +28,19 @@ The crash occurs during debug build. Release builds may also be affected.
 
 ## Minimal Code
 
-The reproduction involves a **cross-module** protocol hierarchy:
+This reproduction depends on [swift-html-rendering](https://github.com/coenttb/swift-html-rendering)
+which contains `HTML.AnyView`. The crash occurs when compiling that library on Windows.
+
+The bug involves a **cross-package** protocol hierarchy:
 
 ```swift
-// === BaseModule ===
-// Defines namespace and base protocol (like WHATWG_HTML_Shared + Rendering)
+// Package: swift-whatwg-html (WHATWG_HTML_Shared module)
+public enum WHATWG_HTML {}
 
-public enum HTML {}
-extension HTML {
-    public struct Context { ... }
-}
+// Package: swift-html-standard (HTML_Standard module)
+public typealias HTML = WHATWG_HTML_Shared.WHATWG_HTML
 
+// Package: swift-renderable (Rendering module)
 public protocol Renderable {
     associatedtype Content
     associatedtype Context
@@ -46,11 +48,7 @@ public protocol Renderable {
     var body: Content { get }
 }
 
-// === ExistentialCrash ===
-// Extends HTML with View protocol (like HTML Renderable)
-
-import BaseModule
-
+// Package: swift-html-rendering (HTML_Renderable module)
 extension HTML {
     public protocol View: Renderable
     where Content: HTML.View, Context == HTML.Context, Output == UInt8 {
@@ -71,11 +69,9 @@ extension HTML {
 }
 ```
 
-The key is that the `HTML` namespace is defined in one module and the `HTML.View` protocol
-is added via extension in a different module. This cross-module extension pattern is what
-triggers the bug.
-
-See `Sources/` for the complete reproduction case.
+The key is that the `HTML` namespace is defined in one package (`swift-whatwg-html`) and the
+`HTML.View` protocol is added via extension in a different package (`swift-html-rendering`).
+This cross-package extension pattern combined with an existential stored property triggers the bug.
 
 ## Stack Trace
 
