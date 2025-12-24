@@ -1,6 +1,9 @@
 # Swift Compiler Crash: Windows Existential Type Mangling
 
-Minimal reproduction case for a Swift compiler crash on Windows when mangling existential types for debug info.
+Reproduction case for a Swift compiler crash on Windows when mangling existential types for debug info.
+
+> **Note:** This bug requires **cross-package** protocol extensions (not just cross-module).
+> The working reproduction is on the [`with-dependencies`](https://github.com/coenttb/swift-issue-windows-existential-crash/tree/with-dependencies) branch.
 
 ## Bug Summary
 
@@ -14,23 +17,34 @@ Assertion failed: isActuallyCanonicalOrNull() && "Forming a CanType out of a non
 ## Reproduction
 
 ```bash
-# On Windows with Swift 6.0+
+# Clone and checkout the working reproduction
+git clone https://github.com/coenttb/swift-issue-windows-existential-crash.git
+cd swift-issue-windows-existential-crash
+git checkout with-dependencies
+
+# On Windows with Swift 6.2
 swift build -c debug
 ```
 
 The crash occurs during debug build. Release builds are not affected.
 
+## Key Finding
+
+- ✅ Cross-module (same package, different targets): **Works** on Windows
+- ❌ Cross-package (different packages): **Crashes** on Windows
+
+The `main` branch contains a cross-module reproduction that does NOT trigger the crash.
+The `with-dependencies` branch contains the cross-package reproduction that DOES trigger the crash.
+
 ## Environment
 
-- **Swift version:** 6.0+ (tested with 6.0.3 and 6.2.1)
+- **Swift version:** 6.2.1 (swift-6.2.1-RELEASE)
 - **Platform:** Windows (x86_64-unknown-windows-msvc)
 - **Works on:** macOS, Linux (same Swift version)
 
-## Minimal Code
+## Code Pattern
 
-This is a **standalone reproduction with no external dependencies**.
-
-The bug involves a cross-module protocol extension pattern:
+The bug involves a cross-package protocol extension pattern:
 
 ```swift
 // === BaseModule ===
@@ -112,13 +126,25 @@ The compiler crashes with an assertion failure when attempting to mangle the exi
 
 ## CI Status
 
+### `with-dependencies` branch (crashes on Windows)
+
 | Platform | Status |
 |----------|--------|
 | macOS | ✅ Works |
 | Linux | ✅ Works |
 | Windows | ❌ Crashes |
 
-**Reproduction CI:** https://github.com/coenttb/swift-issue-windows-existential-crash/actions
+**CI:** https://github.com/coenttb/swift-issue-windows-existential-crash/actions?query=branch%3Awith-dependencies
+
+### `main` branch (does NOT crash - cross-module only)
+
+| Platform | Status |
+|----------|--------|
+| macOS | ✅ Works |
+| Linux | ✅ Works |
+| Windows | ✅ Works |
+
+**CI:** https://github.com/coenttb/swift-issue-windows-existential-crash/actions?query=branch%3Amain
 
 ## Workaround
 
@@ -134,8 +160,6 @@ Or use release builds which don't include debug info by default.
 This bug was discovered in [coenttb/swift-pdf](https://github.com/coenttb/swift-pdf) CI:
 - Failed run: https://github.com/coenttb/swift-pdf/actions/runs/20463585119/job/58801803244
 - The crash occurs in the [swift-html-rendering](https://github.com/coenttb/swift-html-rendering) dependency
-
-A version of this reproduction using the actual packages is available on the [`with-dependencies`](https://github.com/coenttb/swift-issue-windows-existential-crash/tree/with-dependencies) branch.
 
 ## Suggested Labels
 
