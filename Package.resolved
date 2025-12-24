@@ -1,0 +1,15 @@
+{
+  "originHash" : "41e032bb2352b32da2887183063818ad429a6778926893e9f931eb350d7afc04",
+  "pins" : [
+    {
+      "identity" : "swift-issue-windows-existential-crash-other-package",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/coenttb/swift-issue-windows-existential-crash-other-package",
+      "state" : {
+        "revision" : "33a799fe7a5be7169df5e90442c9008a189db49c",
+        "version" : "0.1.0"
+      }
+    }
+  ],
+  "version" : 3
+}

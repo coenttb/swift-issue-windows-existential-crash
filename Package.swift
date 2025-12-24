@@ -6,22 +6,16 @@ let package = Package(
     products: [
         .library(name: "ExistentialCrash", targets: ["ExistentialCrash"]),
     ],
+    dependencies: [
+        // Base module in a SEPARATE PACKAGE - this is required to trigger the bug
+        .package(url: "https://github.com/coenttb/swift-issue-windows-existential-crash-other-package", from: "0.1.0"),
+    ],
     targets: [
-        // Base module: defines the namespace (like WHATWG_HTML_Shared)
-        .target(name: "BaseModule"),
-
-        // Extension module: adds protocol to namespace (like HTML_Renderable)
         .target(
             name: "ExistentialCrash",
-            dependencies: ["BaseModule"]
+            dependencies: [
+                .product(name: "BaseModule", package: "swift-issue-windows-existential-crash-other-package"),
+            ]
         )
     ]
 )
-
-// Match the Swift settings from the crashing packages
-for target in package.targets {
-    target.swiftSettings = [
-        .enableUpcomingFeature("ExistentialAny"),
-        .enableUpcomingFeature("InternalImportsByDefault"),
-    ]
-}

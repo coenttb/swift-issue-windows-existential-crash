@@ -1,9 +1,6 @@
 # Swift Compiler Crash: Windows Existential Type Mangling
 
-Reproduction case for a Swift compiler crash on Windows when mangling existential types for debug info.
-
-> **Note:** This bug requires **cross-package** protocol extensions (not just cross-module).
-> The working reproduction is on the [`with-dependencies`](https://github.com/coenttb/swift-issue-windows-existential-crash/tree/with-dependencies) branch.
+Minimal reproduction case for a Swift compiler crash on Windows when mangling existential types for debug info.
 
 ## Bug Summary
 
@@ -17,39 +14,28 @@ Assertion failed: isActuallyCanonicalOrNull() && "Forming a CanType out of a non
 ## Reproduction
 
 ```bash
-# Clone and checkout the working reproduction
+# On Windows with Swift 6.0+
 git clone https://github.com/coenttb/swift-issue-windows-existential-crash.git
 cd swift-issue-windows-existential-crash
-git checkout with-dependencies
-
-# On Windows with Swift 6.2
 swift build -c debug
 ```
 
 The crash occurs during debug build. Release builds are not affected.
 
-## Key Finding
-
-- ✅ Cross-module (same package, different targets): **Works** on Windows
-- ❌ Cross-package (different packages): **Crashes** on Windows
-
-The `main` branch contains a cross-module reproduction that does NOT trigger the crash.
-The `with-dependencies` branch contains the cross-package reproduction that DOES trigger the crash.
-
 ## Environment
 
-- **Swift version:** 6.2.1 (swift-6.2.1-RELEASE)
+- **Swift version:** 6.0+ (tested with 6.0.3 and 6.2.1)
 - **Platform:** Windows (x86_64-unknown-windows-msvc)
 - **Works on:** macOS, Linux (same Swift version)
 
-## Code Pattern
+## Minimal Code
 
-The bug involves a cross-package protocol extension pattern:
+This reproduction uses two minimal packages:
+
+### Package 1: [swift-issue-windows-existential-crash-other-package](https://github.com/coenttb/swift-issue-windows-existential-crash-other-package)
 
 ```swift
-// === BaseModule ===
 // Defines the namespace
-
 public enum HTML {}
 
 extension HTML {
@@ -57,10 +43,11 @@ extension HTML {
         public init() {}
     }
 }
+```
 
-// === ExistentialCrash ===
-// Extends the namespace with a protocol
+### Package 2: This package (ExistentialCrash)
 
+```swift
 import BaseModule
 
 public protocol Renderable {
@@ -84,7 +71,6 @@ extension HTML {
         // This initializer triggers the crash on Windows
         public init(_ base: any HTML.View) {
             self.base = base
-            // ...
         }
 
         public var body: Never { fatalError() }
@@ -92,11 +78,12 @@ extension HTML {
 }
 ```
 
-The key elements:
-1. A namespace enum (`HTML`) defined in one module
-2. A protocol (`HTML.View`) added via extension in a different module
-3. A struct storing an existential (`any HTML.View`) of that protocol
-4. An initializer taking that existential type
+## Key Finding
+
+The bug requires **cross-package** protocol extensions:
+
+- ✅ Cross-module (same package, different targets): Works on Windows
+- ❌ Cross-package (different packages): Crashes on Windows
 
 ## Stack Trace
 
@@ -118,7 +105,7 @@ Exception Code: 0x80000003
 
 ## Expected Behavior
 
-The compiler should successfully compile the code with debug info enabled, generating valid DWARF debug information for existential types.
+The compiler should successfully compile the code with debug info enabled.
 
 ## Actual Behavior
 
@@ -126,25 +113,13 @@ The compiler crashes with an assertion failure when attempting to mangle the exi
 
 ## CI Status
 
-### `with-dependencies` branch (crashes on Windows)
-
 | Platform | Status |
 |----------|--------|
 | macOS | ✅ Works |
 | Linux | ✅ Works |
 | Windows | ❌ Crashes |
 
-**CI:** https://github.com/coenttb/swift-issue-windows-existential-crash/actions?query=branch%3Awith-dependencies
-
-### `main` branch (does NOT crash - cross-module only)
-
-| Platform | Status |
-|----------|--------|
-| macOS | ✅ Works |
-| Linux | ✅ Works |
-| Windows | ✅ Works |
-
-**CI:** https://github.com/coenttb/swift-issue-windows-existential-crash/actions?query=branch%3Amain
+**CI:** https://github.com/coenttb/swift-issue-windows-existential-crash/actions
 
 ## Workaround
 
@@ -153,13 +128,9 @@ Disable debug info generation on Windows:
 swift build -c debug -Xswiftc -gnone
 ```
 
-Or use release builds which don't include debug info by default.
-
 ## Original Discovery
 
-This bug was discovered in [coenttb/swift-pdf](https://github.com/coenttb/swift-pdf) CI:
-- Failed run: https://github.com/coenttb/swift-pdf/actions/runs/20463585119/job/58801803244
-- The crash occurs in the [swift-html-rendering](https://github.com/coenttb/swift-html-rendering) dependency
+This bug was discovered in [coenttb/swift-pdf](https://github.com/coenttb/swift-pdf) CI.
 
 ## Suggested Labels
 
