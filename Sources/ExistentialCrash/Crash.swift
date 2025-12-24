@@ -8,7 +8,7 @@
 /// and the View protocol is added via extension here. This cross-package
 /// extension pattern combined with existential types triggers the bug.
 
-import BaseModule
+public import BaseModule
 
 // MARK: - Renderable Protocol
 
