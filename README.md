@@ -28,27 +28,42 @@ The crash occurs during debug build. Release builds may also be affected.
 
 ## Minimal Code
 
+The reproduction involves a protocol hierarchy with constrained associated types:
+
 ```swift
-public protocol View {
-    associatedtype Body: View
-    var body: Body { get }
+// Base protocol with 3 associated types
+public protocol Renderable {
+    associatedtype Content
+    associatedtype Context
+    associatedtype Output
+    var body: Content { get }
 }
 
-extension Never: View {
-    public var body: Never { fatalError() }
-}
-
-public struct AnyView: View {
-    public let base: any View  // Existential type
-
-    // This initializer triggers the crash
-    public init(_ base: any View) {
-        self.base = base
+// Constrained protocol refinement
+extension HTML {
+    public protocol View: Renderable
+    where Content: HTML.View, Context == HTML.Context, Output == UInt8 {
+        var body: Content { get }
     }
+}
 
-    public var body: Never { fatalError() }
+// Type-erased wrapper with existential stored property
+extension HTML {
+    public struct AnyView: HTML.View {
+        public let base: any HTML.View  // Existential type - triggers crash
+
+        // This initializer triggers the crash on Windows
+        public init(_ base: any HTML.View) {
+            self.base = base
+            // ...
+        }
+
+        public var body: Never { fatalError() }
+    }
 }
 ```
+
+See `Sources/ExistentialCrash/Crash.swift` for the complete reproduction case.
 
 ## Stack Trace
 
