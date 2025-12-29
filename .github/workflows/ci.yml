@@ -32,9 +32,9 @@ jobs:
       - name: Build (debug)
         run: swift build -c debug
 
-  # This job reproduces the compiler crash
-  windows:
-    name: Windows (Swift 6.0) - CRASHES
+  # This job reproduces the compiler crash with default debug info (DWARF)
+  windows-dwarf:
+    name: Windows (Swift 6.0) DWARF - CRASHES
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v6
@@ -47,5 +47,23 @@ jobs:
       - name: Print Swift version
         run: swift --version
 
-      - name: Build (debug) - This crashes the compiler
+      - name: Build (debug, DWARF) - This crashes the compiler
         run: swift build -c debug -v
+
+  # Test whether CodeView debug format also crashes (per @compnerd's question)
+  windows-codeview:
+    name: Windows (Swift 6.0) CodeView - Testing
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install Swift
+        uses: SwiftyLab/setup-swift@latest
+        with:
+          swift-version: "6.0"
+
+      - name: Print Swift version
+        run: swift --version
+
+      - name: Build (debug, CodeView)
+        run: swift build -c debug -Xswiftc -debug-info-format=codeview -v
